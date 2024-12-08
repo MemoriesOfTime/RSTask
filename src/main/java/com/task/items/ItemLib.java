@@ -3,9 +3,7 @@ package com.task.items;
 import cn.nukkit.Player;
 import cn.nukkit.inventory.Inventory;
 import cn.nukkit.item.Item;
-import com.task.RsTask;
 import com.task.utils.tasks.taskitems.ItemClass;
-
 
 import java.util.ArrayList;
 
@@ -152,7 +150,6 @@ public class ItemLib extends ItemClass implements Cloneable{
             }
             this.item.add(item1);
         }
-
     }
 
     @Override

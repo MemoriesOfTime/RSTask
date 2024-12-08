@@ -12,6 +12,7 @@ import com.task.form.ListenerMenu;
 import com.task.items.ItemLib;
 import com.task.utils.DataTool;
 import com.task.utils.LoadMoney;
+import com.task.utils.RsTask2TipsVariable;
 import com.task.utils.task.AutoSaveFileTask;
 import com.task.utils.task.ChunkPlayerInventoryBookTask;
 import com.task.utils.task.ChunkTaskTask;
@@ -21,6 +22,7 @@ import com.task.utils.tasks.TaskFile;
 import com.task.utils.tasks.taskitems.ItemClass;
 import com.task.utils.tasks.taskitems.TaskItem;
 import org.jline.utils.Log;
+import tip.utils.Api;
 import updata.AutoData;
 
 import java.io.File;
@@ -80,14 +82,12 @@ public class RsTask extends PluginBase{
     public static ExecutorService executor = Executors.newCachedThreadPool();
 
 
-
-    private String[] defaultFirstName = new String[]{
+    private final String[] defaultFirstName = new String[]{
             "a","b","c","d","e","f","g","h",
             "i","j","k", "l","m","n","o","p","q",
             "r","s","t","u","v","w","x","y","z","0","1","2",
             "3","4","5","6","7","8","9","#"
     };
-
 
 
     @Override
@@ -115,13 +115,19 @@ public class RsTask extends PluginBase{
         if(getConfig().getBoolean("auto-save-task.open")){
             executor.execute(new AutoSaveFileTask(this));
         }
+
+        try {
+            Class.forName("tip.utils.variables.BaseVariable");
+            Api.registerVariables("RsTask", RsTask2TipsVariable.class);
+        } catch (Exception ignored) {
+
+        }
+
         Server.getInstance().getScheduler().scheduleDelayedTask(this, () -> {
             RsTask.getTask().getLogger().info("本插件为免费开源插件");
             RsTask.getTask().getLogger().info("GitHub: https://github.com/SmallasWater/RSTask");
         },20);
     }
-
-
 
     private void init(){
 
@@ -150,8 +156,6 @@ public class RsTask extends PluginBase{
     public void loadItem(){
         this.saveResource("ItemLib.yml",false);
         ItemLib.ItemLibs = DataTool.loadItemLib(new Config(this.getDataFolder()+"/ItemLib.yml",Config.YAML));
-
-
     }
 
     private void registerCommand(){
@@ -201,9 +205,6 @@ public class RsTask extends PluginBase{
         return null;
 
     }
-
-
-
 
     /** 判断是否存在*/
     public boolean canExisteItemClass(ItemClass itemClass){
@@ -264,7 +265,6 @@ public class RsTask extends PluginBase{
                 if ((dot >-1) && (dot < (file.getName().length()))) {
                     playerNames.add(file.getName().substring(0, dot));
                 }
-
             }
         }
         return playerNames;
@@ -328,8 +328,8 @@ public class RsTask extends PluginBase{
 
     /** 判断是否开启世界独立任务
      * @deprecated 无
-     * */
-
+     */
+    @Deprecated
     public boolean isWorldAloneTask(){
         return getConfig().getBoolean("是否开启世界独立任务",false);
     }
@@ -401,9 +401,6 @@ public class RsTask extends PluginBase{
         return "/Players/#/"+player+".yml";
     }
 
-
-
-
     /**
      * 获取任务小数进度 百分比
      */
@@ -450,14 +447,9 @@ public class RsTask extends PluginBase{
         return showBack;
     }
 
-
-
-
     private boolean canRunC(){
         return runC;
     }
-
-
 
     public void loadTask() {
         taskConfig = new LinkedHashMap<>();
@@ -547,9 +539,7 @@ public class RsTask extends PluginBase{
                     this.getLogger().warning("配置文件删除失败 请手动删除");
                 }
             }
-
         }
-
     }
 
     public int getGroupSize(){

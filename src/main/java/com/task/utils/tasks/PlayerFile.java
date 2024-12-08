@@ -554,7 +554,11 @@ public class PlayerFile {
     }
 
 
-    /** 获取进行任务（不包括完成与不可领取的） */
+    /**
+     * 获取进行中的任务（不包括完成与不可领取的）
+     *
+     * @return 进行中的任务列表
+     */
     public LinkedList<PlayerTask> getInviteTasks(){
         return getTasksByType(PlayerTaskType.Running);
     }
