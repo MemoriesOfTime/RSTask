@@ -21,7 +21,6 @@ import com.task.utils.tasks.PlayerFile;
 import com.task.utils.tasks.TaskFile;
 import com.task.utils.tasks.taskitems.ItemClass;
 import com.task.utils.tasks.taskitems.TaskItem;
-import org.jline.utils.Log;
 import tip.utils.Api;
 import updata.AutoData;
 
@@ -356,7 +355,7 @@ public class RsTask extends PluginBase{
                 File file = new File(this.getDataFolder()+"/Worlds/"+level.getFolderName()+"/Players/"+i);
                 if(!file.exists()){
                     if(!file.mkdirs()) {
-                        Log.error("玩家文件初始化失败");
+                        this.getLogger().error("玩家文件初始化失败");
                     }
                 }
             }
@@ -456,7 +455,7 @@ public class RsTask extends PluginBase{
         File taskFiles = new File(this.getDataFolder() + "/Tasks");
         if (!taskFiles.exists()) {
             if (!taskFiles.mkdirs()) {
-                Log.error("创建Tasks文件夹失败");
+                this.getLogger().error("创建Tasks文件夹失败");
             }
         }
         File fileE = new File(RsTask.getTask().getDataFolder() + "/Tasks");
@@ -470,28 +469,31 @@ public class RsTask extends PluginBase{
                 }
             }
         }
+
         tasks = TaskFile.getTasks();
         for (String i : defaultFirstName) {
             File file = new File(this.getDataFolder() + "/Players/" + i);
             if (!file.exists()) {
                 if (!file.mkdirs()) {
-                    Log.error("玩家文件初始化失败");
+                    this.getLogger().error("玩家文件初始化失败");
                 }
             }
         }
         playerConfig = new LinkedHashMap<>();
         for (String playerName : getPlayerNames()) {
             playerConfig.put(playerName, new Config(getDataFolder() + getPlayerFileName(playerName)));
-
         }
         saveDefaultConfig();
         reloadConfig();
-        chunkConfigVersion();
+
+        checkConfigVersion();
+
         if(!new File(this.getDataFolder()+"/language.properties").exists()){
             this.saveResource("language.properties",false);
         }
         lag = new Config(this.getDataFolder()+"/language.properties",Config.PROPERTIES);
-        chunkLanguageVersion();
+        checkLanguageVersion();
+
         if(canUseEconomyAPI()){
             getLogger().info("正在检查经济系统....");
             loadEconomy();
@@ -504,7 +506,7 @@ public class RsTask extends PluginBase{
 
         init();
     }
-    private void chunkLanguageVersion(){
+    private void checkLanguageVersion(){
         String v1 = lag.get("version","1.0.0");
         int ver = DataTool.compareVersion(CONFIG_VERSION,v1);
         if(ver == 1 || ver == -1) {
@@ -521,7 +523,7 @@ public class RsTask extends PluginBase{
 
     }
 
-    private void chunkConfigVersion(){
+    private void checkConfigVersion(){
         if(!new File(this.getDataFolder()+"/config.yml").exists()){
             this.saveDefaultConfig();
             this.reloadConfig();

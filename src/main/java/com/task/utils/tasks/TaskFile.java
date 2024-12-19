@@ -7,6 +7,7 @@ import cn.nukkit.utils.Config;
 import cn.nukkit.utils.TextFormat;
 import com.task.RsTask;
 import com.task.events.PlayerAddTaskEvent;
+import com.task.utils.ConfigUtils;
 import com.task.utils.DataTool;
 import com.task.utils.tasks.taskitems.SuccessItem;
 import com.task.utils.tasks.taskitems.TaskButton;
@@ -65,10 +66,10 @@ public class TaskFile {
     private LinkedList<String> notInviteTasks = new LinkedList<>();
 
     private LinkedList<String> notToInviteTasks = new LinkedList<>();
-    /** 刷新时间 */
-    private int day;
+    /** 刷新时间 单位：分钟 */
+    private int refreshTime;
 
-    /**持续时间*/
+    /** 任务领取后有效时间 超时视为放弃任务 */
     private int loadDay = -1;
 
     /** 完成公告类型(0/1) */
@@ -147,18 +148,18 @@ public class TaskFile {
         this(taskName,type,taskItem,taskMessage,star,group,item,task,0);
     }
 
-    public TaskFile(String taskName, TaskType type, TaskItem[] taskItem, String taskMessage, int star,int group, SuccessItem item, String task, int day){
-        this(taskName,type,taskItem,taskMessage,star,group,item,null,task,day,0);
+    public TaskFile(String taskName, TaskType type, TaskItem[] taskItem, String taskMessage, int star,int group, SuccessItem item, String task, int refreshTime){
+        this(taskName,type,taskItem,taskMessage,star,group,item,null,task,refreshTime,0);
     }
 
-    public TaskFile(String taskName, TaskType type, TaskItem[] taskItem, String taskMessage, int star,int group, SuccessItem item, SuccessItem firstItem, String task, int day, int messageType){
-        this(taskName,type,taskItem,taskMessage,star,group,item,firstItem,task,day,messageType,"§l§c[§b任务系统§c]§e恭喜 §a%p §e完成了§d[ %s ]§e任务");
+    public TaskFile(String taskName, TaskType type, TaskItem[] taskItem, String taskMessage, int star,int group, SuccessItem item, SuccessItem firstItem, String task, int refreshTime, int messageType){
+        this(taskName,type,taskItem,taskMessage,star,group,item,firstItem,task,refreshTime,messageType,"§l§c[§b任务系统§c]§e恭喜 §a%p §e完成了§d[ %s ]§e任务");
     }
-    public TaskFile(String taskName, TaskType type, TaskItem[] taskItem, String taskMessage, int star,int group, SuccessItem item, SuccessItem firstItem, String task, int day, int messageType, String broadcastMessage){
-        this(taskName,type,taskItem,taskMessage,star,group,item,firstItem,task,day,messageType,broadcastMessage,new TaskButton(""));
+    public TaskFile(String taskName, TaskType type, TaskItem[] taskItem, String taskMessage, int star,int group, SuccessItem item, SuccessItem firstItem, String task, int refreshTime, int messageType, String broadcastMessage){
+        this(taskName,type,taskItem,taskMessage,star,group,item,firstItem,task,refreshTime,messageType,broadcastMessage,new TaskButton(""));
     }
 
-    public TaskFile(String taskName, TaskType type, TaskItem[] taskItem, String taskMessage, int star,int group, SuccessItem item, SuccessItem firstItem, String task, int day, int messageType, String broadcastMessage, TaskButton button){
+    public TaskFile(String taskName, TaskType type, TaskItem[] taskItem, String taskMessage, int star,int group, SuccessItem item, SuccessItem firstItem, String task, int refreshTime, int messageType, String broadcastMessage, TaskButton button){
         this.type = type;
         this.taskItem = taskItem;
         this.taskName = taskName;
@@ -167,7 +168,7 @@ public class TaskFile {
         this.group = group;
         this.successItem = item;
         this.task = task;
-        this.day = day;
+        this.refreshTime = refreshTime;
         this.firstSuccessItem = firstItem;
         this.messageType = messageType;
         this.button = button;
@@ -232,7 +233,7 @@ public class TaskFile {
         config.set("任务难度",star);
         config.set("任务分组",group);
         config.set("任务介绍",taskMessage == null ? "无":taskMessage);
-        config.set("刷新时间(分钟)",day);
+        config.set("刷新时间(分钟)", refreshTime);
         config.set("持续时间(分钟)",loadDay);
         config.set("任务类型",type.getTaskType());
         config.set("完成次数限制",successCount);
@@ -253,6 +254,11 @@ public class TaskFile {
         config.set("自定义按键图片",button.toSaveConfig());
         config.save();
         RsTask.getTask().taskConfig.put(taskName,config);
+
+        Config description = new Config();
+        if(description.load(RsTask.getTask().getResource("TaskDescription.yml"))) {
+            ConfigUtils.addDescription(config, description);
+        }
     }
 
     private void setShowName(String showName) {
@@ -271,8 +277,13 @@ public class TaskFile {
         return group;
     }
 
-    public void setDay(int day) {
-        this.day = day;
+    /**
+     * 设置刷新时间
+     *
+     * @param refreshTime 刷新时间(分钟)
+     */
+    public void setRefreshTime(int refreshTime) {
+        this.refreshTime = refreshTime;
     }
 
     public void setStar(int star) {
@@ -323,10 +334,14 @@ public class TaskFile {
         this.type = type;
     }
 
-    public int getDay() {
-        return day;
+    /**
+     * 获取任务刷新时间
+     *
+     * @return 任务刷新时间(分钟)
+     */
+    public int getRefreshTime() {
+        return refreshTime;
     }
-
 
     public void addTaskItem(TaskItem item){
         TaskItem[] items = getTaskItem();
@@ -599,7 +614,7 @@ public class TaskFile {
 
         if(!file1.inDay(file.getTaskName()) ){
             //任务刷新时长 分钟
-            int day = file.getDay();
+            int day = file.getRefreshTime();
             int hours = 60;
             int dayTime = 1440;
             //流逝的时间 (分钟)

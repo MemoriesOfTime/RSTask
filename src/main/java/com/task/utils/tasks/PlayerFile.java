@@ -407,7 +407,7 @@ public class PlayerFile {
                         return false;
                     }
                 }
-                if (file.getDay() > 0) {
+                if (file.getRefreshTime() > 0) {
                     return inDay(taskName);
                 }else{
                     return true;
@@ -454,11 +454,10 @@ public class PlayerFile {
         TaskFile file = TaskFile.getTask(taskName);
         if(task != null && file != null){
             Date date = task.getTaskClass().getTime();
-            int t = file.getDay();
+            int t = file.getRefreshTime();
             if(t > 0){
                 return DataTool.getTime(date) >= t;
             }
-
         }
         return true;
     }

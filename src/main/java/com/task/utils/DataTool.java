@@ -14,14 +14,14 @@ import cn.nukkit.nbt.tag.FloatTag;
 import cn.nukkit.nbt.tag.ListTag;
 import cn.nukkit.utils.Config;
 import cn.nukkit.utils.DyeColor;
+import com.google.gson.Gson;
+import com.google.gson.GsonBuilder;
 import com.google.gson.reflect.TypeToken;
 import com.task.RsTask;
 import com.task.events.CreateTaskEvent;
 import com.task.items.ItemLib;
 import com.task.utils.tasks.TaskFile;
 import com.task.utils.tasks.taskitems.ItemClass;
-import com.google.gson.Gson;
-import com.google.gson.GsonBuilder;
 
 import java.text.ParseException;
 import java.text.SimpleDateFormat;
@@ -62,21 +62,22 @@ public class DataTool {
         return taskNames.toArray(new String[0]);
     }
 
-    /** 获取所有任务任务名
+    /**
+     * 获取所有任务任务名
      *
      * @return 任务名数组
-     * */
+     */
     public static String[] getTaskAllNames(){
         LinkedList<String> taskNames = new LinkedList<>(RsTask.getTask().getTasks().keySet());
         return taskNames.toArray(new String[0]);
     }
 
-
-    /** 获取相差分钟
-     * @param oldData 时间1
+    /**
+     * 获取相差分钟
      *
-     * @return 分钟数*/
-
+     * @param oldData 时间1
+     * @return 分钟数
+     */
     public static int getTime(Date oldData) {
         long temp = System.currentTimeMillis() - oldData.getTime();
         return (int) temp / 1000 / 60;
