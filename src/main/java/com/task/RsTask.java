@@ -506,6 +506,7 @@ public class RsTask extends PluginBase{
 
         init();
     }
+
     private void checkLanguageVersion(){
         String v1 = lag.get("version","1.0.0");
         int ver = DataTool.compareVersion(CONFIG_VERSION,v1);

@@ -17,6 +17,9 @@ public class SuccessItem {
     private ItemClass[] item = new ItemClass[]{};
     private int money = 0;
     private CommandClass[] cmd = new CommandClass[]{};
+    /**
+     * 奖励积分
+     */
     private int count = 0;
 
     public SuccessItem(){}
@@ -156,7 +159,19 @@ public class SuccessItem {
                 }
             }
         }
-        return new SuccessItem((int)map.get("Money"),itemClasses,commandClasses,(int)map.get("Count"));
+        int money = 0;
+        try {
+            money = (int) map.get("Money");
+        } catch (Exception e) {
+            throw new RuntimeException("奖励： Money 配置项不存在或格式错误");
+        }
+        int count = 0;
+        try {
+            count = (int) map.get("Count");
+        } catch (Exception e) {
+            throw new RuntimeException("奖励： Count 配置项不存在或格式错误");
+        }
+        return new SuccessItem(money, itemClasses, commandClasses, count);
     }
 
     public void add(String value){
