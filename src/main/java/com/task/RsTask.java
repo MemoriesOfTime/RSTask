@@ -14,8 +14,8 @@ import com.task.utils.DataTool;
 import com.task.utils.LoadMoney;
 import com.task.utils.RsTask2TipsVariable;
 import com.task.utils.task.AutoSaveFileTask;
+import com.task.utils.task.CheckTaskStatus;
 import com.task.utils.task.ChunkPlayerInventoryBookTask;
-import com.task.utils.task.ChunkTaskTask;
 import com.task.utils.task.ListerEvents;
 import com.task.utils.tasks.PlayerFile;
 import com.task.utils.tasks.TaskFile;
@@ -44,10 +44,16 @@ public class RsTask extends PluginBase{
 
     public LinkedHashMap<Player, TaskFile> getClickTask = new LinkedHashMap<>();
 
-    public LinkedHashMap<String,TaskFile> tasks = new LinkedHashMap<>();
+    /**
+     * 任务
+     * 任务名 -> 任务文件
+     */
+    public LinkedHashMap<String, TaskFile> tasks = new LinkedHashMap<>();
 
-
-
+    /**
+     * 玩家文件
+     * 玩家名 -> 玩家文件
+     */
     public LinkedHashMap<String, PlayerFile> playerFiles = new LinkedHashMap<>();
 
     public static boolean loadEconomy = false;
@@ -109,7 +115,7 @@ public class RsTask extends PluginBase{
         if(countChecking) {
             this.getServer().getCommandMap().register("superTask", new RankCommand("c-rank"));
         }
-        executor.execute(new ChunkTaskTask(this));
+        executor.execute(new CheckTaskStatus(this));
         executor.execute(new ChunkPlayerInventoryBookTask(this));
         if(getConfig().getBoolean("auto-save-task.open")){
             executor.execute(new AutoSaveFileTask(this));
@@ -582,12 +588,14 @@ public class RsTask extends PluginBase{
 
     @Override
     public void onDisable() {
-        for(TaskFile file:tasks.values()){
+        for (TaskFile file : tasks.values()) {
             file.toSaveConfig();
         }
-        for(PlayerFile player:playerFiles.values()){
+        tasks.clear();
+
+        for (PlayerFile player : playerFiles.values()) {
             player.toSave();
         }
-
+        playerFiles.clear();
     }
 }

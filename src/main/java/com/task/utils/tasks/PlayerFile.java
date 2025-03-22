@@ -29,10 +29,9 @@ import java.util.Map;
  */
 public class PlayerFile {
 
-    private String playerName;
+    private final String playerName;
 
     private int count;
-
 
     private LinkedList<PlayerTask> playerTasks = new LinkedList<>();
 
@@ -42,10 +41,6 @@ public class PlayerFile {
         }
         return RsTask.getTask().playerFiles.get(playerName);
     }
-
-
-
-
 
     public String getPlayerName() {
         return playerName;

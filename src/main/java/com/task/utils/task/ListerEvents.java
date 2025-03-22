@@ -18,14 +18,14 @@ import cn.nukkit.item.ItemBookWritten;
 import cn.nukkit.level.Level;
 import cn.nukkit.level.Sound;
 import com.task.RsTask;
-import com.task.utils.API;
 import com.task.events.*;
 import com.task.form.CreateMenu;
+import com.task.utils.API;
+import com.task.utils.DataTool;
 import com.task.utils.tasks.PlayerFile;
 import com.task.utils.tasks.TaskFile;
-import com.task.utils.DataTool;
-
-import com.task.utils.tasks.taskitems.*;
+import com.task.utils.tasks.taskitems.PlayerTask;
+import com.task.utils.tasks.taskitems.TaskBook;
 
 import java.util.LinkedList;
 
@@ -34,6 +34,28 @@ import java.util.LinkedList;
  */
 public class ListerEvents implements Listener{
 
+    @EventHandler
+    public void onJoin(PlayerJoinEvent event){
+        Player player = event.getPlayer();
+        if(!RsTask.getTask().getPlayerFile(player.getName()).exists()){
+            Server.getInstance().broadcastMessage(RsTask.getTask().getLag("join-achievement").replace("%p",player.getName()));
+            RsTask.getTask().getPlayerConfig(player.getName());
+        }
+    }
+
+    @EventHandler
+    public void onQuit(PlayerQuitEvent event){
+        Player player = event.getPlayer();
+        RsTask task = RsTask.getTask();
+
+        RsTask.getClickStar.remove(player);
+        task.getClickTask.remove(player);
+
+        PlayerFile remove = task.playerFiles.remove(player.getName());
+        if(remove != null){
+            remove.toSave();
+        }
+    }
 
     @EventHandler(priority = EventPriority.MONITOR)
     public void onBreak(BlockBreakEvent event){
@@ -114,24 +136,6 @@ public class ListerEvents implements Listener{
             }
         }
         RsTask.executor.execute(() -> API.addItem(player,item, TaskFile.TaskType.Click));
-
-
-
-
-    }
-
-
-
-
-
-
-    @EventHandler
-    public void onJoin(PlayerJoinEvent event){
-        Player player = event.getPlayer();
-        if(!RsTask.getTask().getPlayerFile(player.getName()).exists()){
-            Server.getInstance().broadcastMessage(RsTask.getTask().getLag("join-achievement").replace("%p",player.getName()));
-            RsTask.getTask().getPlayerConfig(player.getName());
-        }
     }
 
     @EventHandler
@@ -173,9 +177,7 @@ public class ListerEvents implements Listener{
         if(player != null){
             player.sendMessage(RsTask.getTask().getLag("task-time-out","§d§l[任务系统]§c 你的任务 %s 超时啦").
                     replace("%s",event.getFile().getName()));
-
         }
-
     }
 
     @EventHandler
