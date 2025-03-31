@@ -8,6 +8,8 @@ import com.task.utils.tasks.taskitems.ItemClass;
 import java.util.ArrayList;
 
 /**
+ * 物品词典
+ *
  * @author SmallasWater
  * Create on 2021/3/28 18:35
  * Package com.smallaswater.inborn.data
@@ -25,7 +27,6 @@ public class ItemLib extends ItemClass implements Cloneable{
     public ItemLib(String name, ArrayList<ItemClass> item){
         this.libName = name;
         this.item = item;
-
     }
 
     public int getCount() {

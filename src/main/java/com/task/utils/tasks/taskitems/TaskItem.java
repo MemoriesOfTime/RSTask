@@ -9,8 +9,6 @@ import java.util.Map;
  * @author SmallasWater*/
 public class TaskItem {
 
-
-
     private String taskName;
 
     private int endCount;

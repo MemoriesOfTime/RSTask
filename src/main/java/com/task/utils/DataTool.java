@@ -292,21 +292,18 @@ public class DataTool {
         return map.containsKey(group + "");
     }
 
-    public static ArrayList<ItemLib> loadItemLib(Config config){
+    public static ArrayList<ItemLib> loadItemLib(Config config) {
         ArrayList<ItemLib> itemLibs = new ArrayList<>();
-        ItemLib lib;
-        ArrayList<ItemClass> items;
-        for(Map.Entry<String, Object> objectEntry : config.getAll().entrySet()){
-            if(objectEntry.getValue() instanceof List){
-                items = new ArrayList<>();
-                for(Object msg: (List)objectEntry.getValue()){
+        for (Map.Entry<String, Object> objectEntry : config.getAll().entrySet()) {
+            if (objectEntry.getValue() instanceof List) {
+                ArrayList<ItemClass> items = new ArrayList<>();
+                for (Object msg : (List) objectEntry.getValue()) {
                     ItemClass customItem = ItemClass.toItem(msg.toString());
-                    if(customItem != null){
+                    if (customItem != null) {
                         items.add(customItem);
                     }
                 }
-                lib = new ItemLib(objectEntry.getKey(),items);
-                itemLibs.add(lib);
+                itemLibs.add(new ItemLib(objectEntry.getKey(), items));
             }
         }
         return itemLibs;
