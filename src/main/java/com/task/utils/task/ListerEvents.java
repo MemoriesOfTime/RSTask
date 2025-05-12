@@ -50,10 +50,11 @@ public class ListerEvents implements Listener{
 
         RsTask.getClickStar.remove(player);
         task.getClickTask.remove(player);
-
-        PlayerFile remove = task.playerFiles.remove(player.getName());
-        if(remove != null){
-            remove.toSave();
+        if (!task.getConfig().getBoolean("auto-save-task.open")) {
+            PlayerFile remove = task.playerFiles.remove(player.getName());
+            if (remove != null) {
+                remove.toSave();
+            }
         }
     }
 

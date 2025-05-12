@@ -52,7 +52,6 @@ public class PlayerFile {
     }
 
     private boolean canSyncTaskItem(){
-
         for(PlayerTask task:playerTasks){
             if(task.getTaskFile() == null){
                 playerTasks.remove(task);
@@ -76,8 +75,6 @@ public class PlayerFile {
 
 
     //* 初始化
-
-
     private void init(){
         Config config = RsTask.getTask().getPlayerConfig(playerName);
         LinkedList<PlayerTask> tasks = new LinkedList<>();
@@ -129,8 +126,6 @@ public class PlayerFile {
         return issetTask(task.getTaskName());
     }
 
-
-
     /**
      * 给玩家增加一个任务
      * @param taskName 任务名称
@@ -145,9 +140,7 @@ public class PlayerFile {
      * */
     public void addTask(TaskFile taskName){
         this.addTask(new PlayerTask(taskName));
-
     }
-
 
     /**
      * 给玩家增加一个任务
@@ -166,9 +159,6 @@ public class PlayerFile {
             t.setTaskClass(playerTaskClass);
         }
     }
-
-
-
 
     /**
      * 给玩家移除一个任务
@@ -420,8 +410,6 @@ public class PlayerFile {
         return false;
     }
 
-
-
     /** 是否完成过 */
     public boolean isSuccessed(String taskName){
         if(issetTask(taskName)){
@@ -440,8 +428,6 @@ public class PlayerFile {
         }
         return count;
     }
-
-
 
     /** 任务是否冷却结束 */
     public boolean inDay(String taskName){
@@ -926,9 +912,9 @@ public class PlayerFile {
         for(PlayerTask task:tasks){
             playerTasks.putAll(task.toSaveConfig());
         }
-        return new LinkedHashMap<String,Object>(){{
-            put("Task",playerTasks);
-            put("Count",count);
+        return new LinkedHashMap<>() {{
+            put("Task", playerTasks);
+            put("Count", count);
         }};
     }
 

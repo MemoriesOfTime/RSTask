@@ -580,12 +580,12 @@ public class TaskFile {
      *
      * @return 是否成功*/
     public static boolean runTaskFile(Player player,TaskFile file){
-        PlayerFile file1 = PlayerFile.getPlayerFile(player.getName());
-        PlayerFile.PlayerTaskType type = file1.getTaskType(file);
+        PlayerFile playerFile = PlayerFile.getPlayerFile(player.getName());
+        PlayerFile.PlayerTaskType type = playerFile.getTaskType(file);
 
         if(type == PlayerFile.PlayerTaskType.can_Invite || type == PlayerFile.PlayerTaskType.isSuccess_canInvite){
             int starCount = DataTool.starNeed(file.getGroup());
-            if(RsTask.canOpen() && file1.getCount() < starCount){
+            if(RsTask.canOpen() && playerFile.getCount() < starCount){
                 player.sendMessage(RsTask.getTask().getLag("not-add-task","§c[任务系统] 抱歉，此任务不能领取"));
                 return false;
             }else{
@@ -598,27 +598,27 @@ public class TaskFile {
             return true;
         }
         if((file.getLastTask() != null && !"null".equals(file.getLastTask()) && !"".equals(file.getLastTask()))){
-            if(!file1.isSuccessed(file.getLastTask())){
+            if(!playerFile.isSuccessed(file.getLastTask())){
                 player.sendMessage(RsTask.getTask().getLag("useLastTask").replace("%s",file.getLastTask()));
                 return false;
             }
         }
-        if(file1.isSuccessed(file.getTaskName())){
+        if(playerFile.isSuccessed(file.getTaskName())){
             if(file.getSuccessCount() != -1) {
-                if(file.getSuccessCount() <= file1.getSuccessedCount(file.getTaskName())) {
+                if(file.getSuccessCount() <= playerFile.getSuccessedCount(file.getTaskName())) {
                     player.sendMessage(RsTask.getTask().getLag("repeat-collection"));
                     return false;
                 }
             }
         }
 
-        if(!file1.inDay(file.getTaskName()) ){
+        if(!playerFile.inDay(file.getTaskName()) ){
             //任务刷新时长 分钟
             int day = file.getRefreshTime();
             int hours = 60;
             int dayTime = 1440;
             //流逝的时间 (分钟)
-            int out = DataTool.getTime(file1.getTaskByName(file.getTaskName()).getTaskClass().getTime());
+            int out = DataTool.getTime(playerFile.getTaskByName(file.getTaskName()).getTaskClass().getTime());
             int dayM = ((day > out)?(day - out):0);
             String dayMs = dayM+" 分钟";
             if(dayM / hours >= 1){
