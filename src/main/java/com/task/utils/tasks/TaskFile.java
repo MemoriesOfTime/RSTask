@@ -212,7 +212,7 @@ public class TaskFile {
         return TaskFile.getTask(task);
     }
 
-    public void toSaveConfig(){
+    public synchronized void toSaveConfig(){
         if(taskName == null) {
             return;
         }

@@ -886,12 +886,13 @@ public class PlayerFile {
         config.save();
     }
 
-    public boolean toSave(){
+    public synchronized boolean toSave(){
         Config config = RsTask.getTask().getPlayerConfig(playerName);
-        if(defaultConfig().isEmpty()){
+        LinkedHashMap<String, Object> map = defaultConfig();
+        if(map.isEmpty()){
             return false;
         }
-        config.setAll(defaultConfig());
+        config.setAll(map);
         config.save();
         return true;
     }
